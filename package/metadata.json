@@ -1,0 +1,20 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "3p1cball-code"
+            }
+        ],
+        "Category": "Weather",
+        "Description": "Niederschlagsradar und Temperaturen für Berlin und Brandenburg",
+        "Description[en_GB]": "Precipitation radar and temperatures for Berlin and Brandenburg",
+        "Icon": "weather-showers",
+        "Id": "org.kde.plasma.regenradar",
+        "License": "MIT",
+        "Name": "Regenradar",
+        "Version": "1.0.0",
+        "Website": "https://github.com/3p1cball-code/regenradar-widget"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0"
+}

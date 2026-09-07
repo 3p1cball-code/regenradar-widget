@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
+                          http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
+    <kcfgfile name=""/>
+    <group name="General">
+        <entry name="backgroundOpacity" type="Double">
+            <default>0.62</default>
+        </entry>
+        <entry name="cornerRadius" type="Int">
+            <default>14</default>
+        </entry>
+        <entry name="forecastHours" type="Int">
+            <default>4</default>
+        </entry>
+        <entry name="showTemperatures" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="showLegend" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="zoomFactor" type="Double">
+            <default>1.0</default>
+        </entry>
+        <entry name="panX" type="Double">
+            <default>0.0</default>
+        </entry>
+        <entry name="panY" type="Double">
+            <default>0.0</default>
+        </entry>
+        <entry name="lightBasemap" type="Bool">
+            <default>false</default>
+        </entry>
+    </group>
+</kcfg>
