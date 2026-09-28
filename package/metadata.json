@@ -13,7 +13,7 @@
         "Id": "org.kde.plasma.regenradar",
         "License": "MIT",
         "Name": "Regenradar",
-        "Version": "1.0.0",
+        "Version": "1.0.1",
         "Website": "https://github.com/3p1cball-code/regenradar-widget"
     },
     "X-Plasma-API-Minimum-Version": "6.0"

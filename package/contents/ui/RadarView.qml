@@ -334,12 +334,16 @@ Item {
         delegate: Item {
             required property var modelData
 
+            // temperature at the selected frame's time, not at "now"
+            readonly property real temp: view.frame
+                                         ? src.tempAt(modelData, view.frame.time) : NaN
+
             // zooming in spreads the towns out, so more of them fit
             readonly property real room: view.width * Math.min(2.0, view.zoomFactor)
             readonly property int maxRank: room < 270 ? 0
                                          : room < 350 ? 1
                                          : room < 520 ? 2 : 3
-            visible: modelData.rank <= maxRank && !isNaN(modelData.temp)
+            visible: modelData.rank <= maxRank && !isNaN(temp)
             x: view.sx(modelData.lon)
             y: view.sy(modelData.lat)
             width: 0
@@ -365,7 +369,7 @@ Item {
                 spacing: -2
 
                 Text {
-                    text: Math.round(modelData.temp) + "°"
+                    text: Math.round(temp) + "°"
                     color: view.ink
                     opacity: 0.95
                     font.pixelSize: Math.round(14 * view.ui)

@@ -16,7 +16,7 @@ einigen Orten, und ein einziger Regler: die Zeit.
 | −2 h … jetzt | DWD-Radarkomposit **RV** (Analyse) | 1 × 1 km, 10-Minuten-Schritte |
 | jetzt … +2 h | DWD-Radarkomposit **RV** (Radar-Nowcast) | 1 × 1 km, 10-Minuten-Schritte |
 | +2 h … +N h | DWD **ICON-D2** über Open-Meteo | 2,2 km, 15-Minuten-Schritte |
-| Temperaturen | Open-Meteo (`temperature_2m`) | 8 Orte, alle 10 min |
+| Temperaturen | Open-Meteo (`temperature_2m`, 15-min-Reihe) | 8 Orte, folgt dem Zeitregler |
 | Karte | Esri „World Dark/Light Gray Canvas“ | Kachel-Layer |
 
 Alle Quellen sind frei und brauchen keinen API-Schlüssel.

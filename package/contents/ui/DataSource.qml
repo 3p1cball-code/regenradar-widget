@@ -6,7 +6,7 @@ import QtQuick
  *   past .. +2 h : DWD "RV" radar composite (1x1 km, 5 min steps), analysis
  *                  and radar nowcast, via the DWD WMS at maps.dwd.de
  *   +2 h .. +N h : DWD ICON-D2 precipitation via Open-Meteo (2.2 km, 15 min)
- *   temperatures : Open-Meteo, a handful of cities in the region
+ *   temperatures : Open-Meteo 15-min series, a handful of cities in the region
  *
  * merged into one chronological "frames" timeline.
  */
@@ -166,29 +166,65 @@ QtObject {
     }
 
     // --- temperatures ------------------------------------------------------
+    // Fetched as a 15-min series covering the whole frame timeline (radar
+    // history plus the model horizon) so the label can follow the scrubber.
     function fetchTemps() {
         var lats = [], lons = [];
         for (var i = 0; i < cityList.length; ++i) {
             lats.push(cityList[i].lat);
             lons.push(cityList[i].lon);
         }
+        var past = Math.ceil(pastMinutes / 15) + 1;
+        var future = Math.ceil(forecastHours * 4) + 2;
         get("https://api.open-meteo.com/v1/forecast?latitude=" + lats.join(",")
             + "&longitude=" + lons.join(",")
-            + "&current=temperature_2m&timezone=UTC", function(xhr) {
+            + "&minutely_15=temperature_2m&timezone=UTC"
+            + "&past_minutely_15=" + past
+            + "&forecast_minutely_15=" + future, function(xhr) {
             var d = JSON.parse(xhr.responseText);
             if (!Array.isArray(d))
                 d = [d];
             var out = [];
             for (var i = 0; i < cityList.length; ++i)
                 out.push({ name: cityList[i].name, lat: cityList[i].lat,
-                           lon: cityList[i].lon, rank: cityList[i].rank, temp: NaN });
+                           lon: cityList[i].lon, rank: cityList[i].rank,
+                           times: [], temps: [] });
             for (var j = 0; j < d.length; ++j) {
                 var id = (d[j].location_id !== undefined) ? d[j].location_id : 0;
-                if (id < out.length && d[j].current)
-                    out[id].temp = d[j].current.temperature_2m;
+                if (id >= out.length || !d[j].minutely_15)
+                    continue;
+                var t = d[j].minutely_15.time;
+                var v = d[j].minutely_15.temperature_2m;
+                var times = [], temps = [];
+                for (var k = 0; k < t.length; ++k) {
+                    if (v[k] === null || v[k] === undefined)
+                        continue;
+                    times.push(Date.parse(t[k] + "Z") / 1000);
+                    temps.push(v[k]);
+                }
+                out[id].times = times;
+                out[id].temps = temps;
             }
             src.cities = out;
         });
+    }
+
+    // temperature for a city at epoch time t, linearly interpolated
+    function tempAt(city, t) {
+        if (!city || !city.times || city.times.length === 0)
+            return NaN;
+        var ts = city.times, vs = city.temps, last = ts.length - 1;
+        if (t <= ts[0])
+            return vs[0];
+        if (t >= ts[last])
+            return vs[last];
+        for (var i = 1; i <= last; ++i) {
+            if (ts[i] >= t) {
+                var f = (t - ts[i - 1]) / (ts[i] - ts[i - 1]);
+                return vs[i - 1] + f * (vs[i] - vs[i - 1]);
+            }
+        }
+        return vs[last];
     }
 
     // --- timeline ----------------------------------------------------------
@@ -221,7 +257,10 @@ QtObject {
         frames = list;
     }
 
-    onForecastHoursChanged: fetchForecast()
+    onForecastHoursChanged: {
+        fetchForecast();
+        fetchTemps();
+    }
 
     // --- refresh timers ----------------------------------------------------
     property Timer radarTimer: Timer {
