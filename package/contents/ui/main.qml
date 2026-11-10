@@ -6,8 +6,8 @@ import org.kde.plasma.core as PlasmaCore
 PlasmoidItem {
     id: root
 
-    // the widget draws its own translucent background
-    Plasmoid.backgroundHints: PlasmaCore.Types.NoBackground
+    // the widget draws its own translucent background; optional Plasma/KWin blur behind it
+    Plasmoid.backgroundHints: Plasmoid.configuration.backgroundBlur ? PlasmaCore.Types.TranslucentBackground : PlasmaCore.Types.NoBackground
     preferredRepresentation: fullRepresentation
 
     fullRepresentation: RadarView {
