@@ -8,7 +8,7 @@ KCM.SimpleKCM {
     id: page
 
     property alias cfg_backgroundOpacity: opacitySlider.value
-    property alias cfg_backgroundBlur: blurCheck.checked
+    property alias cfg_backgroundBlurRadius: blurRadius.value
     property alias cfg_cornerRadius: radiusSpin.value
     property alias cfg_forecastHours: forecastSpin.value
     property alias cfg_showTemperatures: tempsCheck.checked
@@ -37,10 +37,19 @@ KCM.SimpleKCM {
             }
         }
 
-        QQC2.CheckBox {
-            id: blurCheck
+        RowLayout {
             Kirigami.FormData.label: i18n("Unschärfe:")
-            text: i18n("Hintergrund weichzeichnen (KWin-Blur)")
+            QQC2.Slider {
+                id: blurRadius
+                from: 0.0
+                to: 1.0
+                stepSize: 0.05
+                Layout.preferredWidth: Kirigami.Units.gridUnit * 12
+            }
+            QQC2.Label {
+                text: blurRadius.value <= 0.001 ? i18n("aus") : Math.round(blurRadius.value * 100) + " %"
+                Layout.preferredWidth: Kirigami.Units.gridUnit * 3
+            }
         }
 
         RowLayout {
