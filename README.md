@@ -48,6 +48,8 @@ der hellere Strich markiert „jetzt“. Zukunftsbilder sind oben rechts als
 ## Einstellungen
 
 * **Transparenz** — 20 % … 100 %
+* **Unschärfe** — 0 … 100 % (0 = aus): die Tapete hinter dem Widget wird
+  weichgezeichnet (siehe unten)
 * **Zoom** — 0,5 × … 5,0 × (1 × zeigt genau Berlin + Brandenburg), plus
   *Ansicht zentrieren*
 * **Eckenradius**
@@ -95,10 +97,20 @@ Modell-Vorhersage nebeneinander. `RadarView` hat ausserdem `debugOverlay: true`.
   lauflängenkodierte `fillRect`-Spannen gezeichnet.
 * **`renderStrategy: Canvas.Immediate`** ist Pflicht; mit der Standard-Strategie
   wird der Paint still verworfen. Kosten: ~9 ms pro Bild bei 710 × 510.
-* **Shader-Effekte** (`MultiEffect`) werden bewusst nirgends verwendet, damit das
-  Widget auch ohne GPU-Pfad identisch aussieht. Runde Ecken entstehen dadurch,
-  dass die Karte so weit eingerückt ist, dass ihre Ecken innerhalb der
-  abgerundeten Karte bleiben.
+* **Shader-Effekte** (`MultiEffect`) werden in der Karte selbst bewusst nicht
+  verwendet, damit sie auch ohne GPU-Pfad identisch aussieht. Runde Ecken
+  entstehen dadurch, dass die Karte so weit eingerückt ist, dass ihre Ecken
+  innerhalb der abgerundeten Karte bleiben. Einzige Ausnahme ist die optionale
+  Unschärfe (`WallpaperBlur.qml`); bei 0 % ist sie komplett aus.
+* **Unschärfe hinter dem Widget:** KWins Blur-behind greift bei Desktop-Widgets
+  nicht — sie liegen im selben Fenster wie die Tapete, dahinter ist nichts.
+  Auch das Nachladen der Bilddatei aus der Plasma-Konfiguration taugt nicht
+  (Diashow, Farbtapete, Füllmodus, Pfad als URL …). `WallpaperBlur.qml` greift
+  stattdessen per `ShaderEffectSource` direkt das lebende Tapeten-Item der
+  Containment (`Plasmoid.containment.wallpaperGraphicsObject`) ab — den
+  Ausschnitt unter dem Widget plus einen Rand, damit der Blur an den Kanten
+  echte Pixel hat — und zeichnet ihn mit `MultiEffect` weich. Verschiebungen
+  werden über die `x`/`y`-Signale aller Eltern-Items verfolgt.
 
 ## Datenquellen / Attribution
 
